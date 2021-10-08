@@ -1,0 +1,12 @@
+{
+  "name": "cp-benchmarks",
+  "version": "1.0.0",
+  "description": "Benchmarking starting child processes from Electron.",
+  "main": "index.js",
+  "author": "Thorsten Lorenz <thlorenz@gmx.de>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "electron": "^15.1.2"
+  }
+}
