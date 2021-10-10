@@ -62,36 +62,3 @@ if (module.parent == null) {
     }
   })()
 }
-
-// ---------
-// Results
-// --------
-
-// The results are the same no matter if the `launch` happens from a worker
-// thread or the main process thread.
-
-// -----------------
-// launch via `execa`
-// -----------------
-
-// Node.js v14.17.6
-// 48ms each
-
-// Electron: ELECTRON_RUN_AS_NODE
-// 472ms each
-
-// Electron: using Node.js
-// 460ms each
-
-// -----------------
-// execFile
-// -----------------
-
-// Node.js v14.17.6
-// 48ms each
-
-// Electron: ELECTRON_RUN_AS_NODE
-// stuck
-
-// Electron: using Node.js
-// 53ms each
