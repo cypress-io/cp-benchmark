@@ -3,11 +3,10 @@ const ITER = 1e1
 const { launchFnKey, launchFn, execPath } = require('./core/launch')
 const { average } = require('./core/process')
 
-console.log(process.versions)
 ;(async () => {
   try {
     const times = []
-    const args = ['print-versions.js']
+    const args = [require.reolve('../print-versions.js')]
     console.log(
       `Launching via ${launchFnKey} and ${execPath} ${args.join(
         ' '
