@@ -1,6 +1,6 @@
 'use strict'
 const ITER = 1e1
-const { execFile } = require('child_process')
+const { execFile, fork } = require('child_process')
 
 const now = require('performance-now')
 const execa = require('execa')
@@ -34,6 +34,25 @@ async function launchFile(args) {
   return end - start
 }
 
+async function launchFork(args) {
+  const promise = new Promise((resolve, reject) => {
+    const child = fork(args[0], [], { env })
+    child
+      .on('error', (err) => reject(err))
+      .on('close', (code) => {
+        if (code !== 0) {
+          reject(new Error(`Fork completed with exit code ${code}`))
+        } else {
+          resolve()
+        }
+      })
+  })
+  const start = now()
+  const res = await promise
+  const end = now()
+  return end - start
+}
+
 function average(times) {
   const sum = times.reduce((acc, x) => acc + x)
   const avg = sum / times.length
@@ -50,7 +69,7 @@ if (module.parent == null) {
       console.log(`Launching ${execPath} ${args.join(' ')} ${ITER} times`)
       for (let i = 0; i < ITER; i++) {
         process.stdout.write('.')
-        const ms = await launchFile(args)
+        const ms = await launchFork(args)
         times.push(ms)
       }
       const { sum, avg } = average(times)
