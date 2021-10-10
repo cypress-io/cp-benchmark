@@ -2,11 +2,21 @@
   "name": "cp-benchmarks",
   "version": "1.0.0",
   "description": "Benchmarking starting child processes from Electron.",
-  "main": "index.js",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron app",
+    "start-node": "NODE_PATH=/usr/local/bin/node node app",
+    "start-elec-node": "NODE_PATH=/usr/local/bin/node electron app",
+    "worker": "electron worker-app",
+    "worker-node": "NODE_PATH=/usr/local/bin/node node worker-app",
+    "worker-elec-node": "NODE_PATH=/usr/local/bin/node electron worker-app"
+  },
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "electron": "^15.1.2"
+    "electron": "^15.1.2",
+    "execa": "^5.1.1",
+    "performance-now": "^2.1.0"
   }
 }
