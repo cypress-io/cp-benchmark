@@ -19,6 +19,7 @@ async function launch(args) {
 }
 
 async function launchFile(args) {
+  const start = now()
   const promise = new Promise((resolve, reject) => {
     execFile(execPath, args, { env }, (err, stdout, stderr) => {
       if (err != null) {
@@ -28,15 +29,15 @@ async function launchFile(args) {
       }
     })
   })
-  const start = now()
   const { stdout } = await promise
   const end = now()
   return end - start
 }
 
 async function launchFork(args) {
+  const start = now()
   const promise = new Promise((resolve, reject) => {
-    const child = fork(args[0], [], { env })
+    const child = fork(args[0], [], { env, silent: true })
     child
       .on('error', (err) => reject(err))
       .on('close', (code) => {
@@ -47,7 +48,6 @@ async function launchFork(args) {
         }
       })
   })
-  const start = now()
   const res = await promise
   const end = now()
   return end - start
@@ -60,24 +60,21 @@ function average(times) {
 }
 
 module.exports = { launch, launchFile }
-
-if (module.parent == null) {
-  ;(async () => {
-    try {
-      const times = []
-      const args = ['print-versions.js']
-      console.log(`Launching ${execPath} ${args.join(' ')} ${ITER} times`)
-      for (let i = 0; i < ITER; i++) {
-        process.stdout.write('.')
-        const ms = await launchFork(args)
-        times.push(ms)
-      }
-      const { sum, avg } = average(times)
-      console.log('\nTook %sms -> %sms each', sum.toFixed(3), avg.toFixed(3))
-    } catch (err) {
-      console.error(err)
-    } finally {
-      process.exit(0)
+;(async () => {
+  try {
+    const times = []
+    const args = ['print-versions.js']
+    console.log(`Launching ${execPath} ${args.join(' ')} ${ITER} times`)
+    for (let i = 0; i < ITER; i++) {
+      process.stdout.write('.')
+      const ms = await launchFork(args)
+      times.push(ms)
     }
-  })()
-}
+    const { sum, avg } = average(times)
+    console.log('\nTook %sms -> %sms each', sum.toFixed(3), avg.toFixed(3))
+  } catch (err) {
+    console.error(err)
+  } finally {
+    process.exit(0)
+  }
+})()

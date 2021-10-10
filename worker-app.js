@@ -1,6 +1,5 @@
 'use strict'
 
-const { launch } = require('./app')
 const { Worker } = require('worker_threads')
 
 const worker = new Worker(require.resolve('./app'))
