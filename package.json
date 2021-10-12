@@ -10,6 +10,7 @@
     "worker": "electron worker-app",
     "worker-node": "NODE_PATH=/usr/local/bin/node node worker-app",
     "worker-elec-node": "NODE_PATH=/usr/local/bin/node electron worker-app",
+    "par": "DEBUG_COLORS=1 DEBUG=* electron parallel-launch/app",
     "par-elec-node": "DEBUG_COLORS=1 DEBUG=* NODE_PATH=/usr/local/bin/node electron parallel-launch/app"
   },
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",

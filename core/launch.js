@@ -42,11 +42,7 @@ async function launchFork(args) {
 }
 
 const launchFnKey =
-  process.env.LAUNCH_SCRIPT != null
-    ? 'launchFile'
-    : process.env.LAUNCH_FORK != null
-    ? 'launchFork'
-    : 'launch'
+  process.env.LAUNCH_SCRIPT != null ? process.env.LAUNCH_SCRIPT : 'launch'
 
 const launchFn = { launch, launchFile, launchFork }[launchFnKey]
 
