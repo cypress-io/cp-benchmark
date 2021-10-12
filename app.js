@@ -1,5 +1,7 @@
 'use strict'
 const ITER = 1e1
+
+const now = require('performance-now')
 const { launchFnKey, launchFn, execPath } = require('./core/launch')
 const { average } = require('./core/process')
 
@@ -14,8 +16,10 @@ const { average } = require('./core/process')
     )
     for (let i = 0; i < ITER; i++) {
       process.stdout.write('.')
-      const ms = await launchFn(args)
-      times.push(ms)
+      const start = now()
+      await launchFn(args)
+      const end = now()
+      times.push(end - start)
     }
     const { sum, avg } = average(times)
     console.log('\nTook %sms -> %sms each', sum.toFixed(3), avg.toFixed(3))

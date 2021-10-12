@@ -1,6 +1,9 @@
 'use strict'
+
 const ITER = 1e1
 const THREADS = 5
+
+const now = require('performance-now')
 const { average } = require('../core/process')
 
 const { Worker, workerData } = require('worker_threads')
@@ -49,6 +52,7 @@ const launchesPerWorker = ITER / THREADS
     console.log(
       `Launching via ${launchFnKey} and ${execPath} ${args.join(' ')}`
     )
+    const startAll = now()
     for (let i = 0; i < ITER; i += THREADS) {
       process.stdout.write('.')
       const all = await launchViaWorker(launchesPerWorker)
@@ -58,10 +62,17 @@ const launchesPerWorker = ITER / THREADS
         averages.push(avg)
       }
     }
+    const endAll = now()
+    const sumAll = endAll - startAll
+    const avgAll = sumAll / ITER
+
     const { avg: sum } = average(sums)
     const { avg } = average(averages)
     console.log(
-      '\nTook %sms per %s -> %sms each',
+      '\nTook a total of\n%sms for %d -> %sms each.\n%sms per %s - > %sms each',
+      sumAll.toFixed(3),
+      ITER,
+      avgAll.toFixed(3),
       sum.toFixed(3),
       launchesPerWorker,
       avg.toFixed(3)
