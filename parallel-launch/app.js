@@ -1,7 +1,7 @@
 'use strict'
 
-const ITER = 1e1
-const THREADS = 5
+const ITER = 20
+const THREADS = 10
 
 const now = require('performance-now')
 const { average } = require('../core/process')
@@ -9,10 +9,16 @@ const { average } = require('../core/process')
 const { Worker, workerData } = require('worker_threads')
 const { launchFnKey, execPath } = require('../core/launch')
 
-function launchWorker() {
+const debug = require('debug')
+const logInfo = debug('cp:info')
+const logDebug = debug('cp:debug')
+
+const launchesPerWorker = ITER / THREADS
+
+function launchWorker(launchesPerWorker, workerID) {
   return new Promise((resolve, reject) => {
     const worker = new Worker(require.resolve('./worker'), {
-      workerData: launchesPerWorker,
+      workerData: { ITER: launchesPerWorker, workerID },
     })
     let res = null
 
@@ -34,27 +40,22 @@ function launchWorker() {
 function launchViaWorker(launchesPerWorker) {
   const promises = []
   for (let i = 0; i < THREADS; i++) {
-    promises.push(launchWorker(launchesPerWorker))
+    promises.push(launchWorker(launchesPerWorker, i))
   }
   return Promise.all(promises)
 }
-
-const launchesPerWorker = ITER / THREADS
 
 ;(async () => {
   try {
     const averages = []
     const sums = []
     const args = [require.resolve('../print-versions.js')]
-    console.log(
+    logInfo(
       `Using ${THREADS} threads, launching ${launchesPerWorker} per worker for a total of ${ITER} times`
     )
-    console.log(
-      `Launching via ${launchFnKey} and ${execPath} ${args.join(' ')}`
-    )
+    logInfo(`Launching via ${launchFnKey} and ${execPath} ${args.join(' ')}`)
     const startAll = now()
     for (let i = 0; i < ITER; i += THREADS) {
-      process.stdout.write('.')
       const all = await launchViaWorker(launchesPerWorker)
 
       for (const { sum, avg } of all) {
@@ -68,7 +69,7 @@ const launchesPerWorker = ITER / THREADS
 
     const { avg: sum } = average(sums)
     const { avg } = average(averages)
-    console.log(
+    logInfo(
       '\nTook a total of\n%sms for %d -> %sms each.\n%sms per %s - > %sms each',
       sumAll.toFixed(3),
       ITER,

@@ -10,14 +10,16 @@
     "worker": "electron worker-app",
     "worker-node": "NODE_PATH=/usr/local/bin/node node worker-app",
     "worker-elec-node": "NODE_PATH=/usr/local/bin/node electron worker-app",
-    "par-elec-node": "NODE_PATH=/usr/local/bin/node electron parallel-launch/app"
+    "par-elec-node": "DEBUG_COLORS=1 DEBUG=* NODE_PATH=/usr/local/bin/node electron parallel-launch/app"
   },
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
+    "debug": "^4.3.2",
     "electron": "^15.1.2",
     "execa": "^5.1.1",
-    "performance-now": "^2.1.0"
+    "performance-now": "^2.1.0",
+    "supports-color": "^9.0.2"
   }
 }
