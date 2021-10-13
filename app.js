@@ -8,7 +8,7 @@ const { average } = require('./core/process')
 ;(async () => {
   try {
     const times = []
-    const args = [require.reolve('../print-versions.js')]
+    const args = [require.resolve('./print-versions.js')]
     console.log(
       `Launching via ${launchFnKey} and ${execPath} ${args.join(
         ' '
